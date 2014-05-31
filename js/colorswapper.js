@@ -14,7 +14,7 @@ var banana = 'banana.jpg';
 var kiwi = 'kiwi.jpg';
 var orange = 'orange.jpg';
 var peach = 'peach.jpg';
-var plum = 'plum.jpg';
+var plum = 'plum.png';
 var strawberry = 'strawberry.jpg';
 var NUM_CANVASES = 2;
 
