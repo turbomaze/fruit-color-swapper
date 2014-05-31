@@ -9,20 +9,17 @@
 
 /**********
  * config */
-var IMG_NAME = 'image.jpg';
+var apple = 'apple.jpg';
+var banana = 'banana.jpg';
+var kiwi = 'kiwi.jpg';
+var orange = 'orange.jpg';
+var peach = 'peach.jpg';
+var plum = 'plum.jpg';
+var strawberry = 'strawberry.jpg';
 var NUM_CANVASES = 2;
 
 /*************
  * constants */
-var gaussianBlurFilter = getGaussian(7, 7);
-var gaussianBlurFilterX = getGaussian(1, 7);
-var gaussianBlurFilterY = getGaussian(7, 1);
-var d_dxFilter = [[-1, 0, 1], 
-				  [-1, 0, 1], 
-				  [-1, 0, 1]];
-var d_dyFilter = [[-1, -1, -1], 
-				  [0, 0, 0], 
-				  [1, 1, 1]];
 
 /*********************
  * working variables */
@@ -35,7 +32,7 @@ function initColorSwapper() {
 	//initialize working variables//
 	filterHandlers = [];
 	for (var ai = 0; ai < NUM_CANVASES; ai++) {
-		var canvas = $('canvas'+ai);
+		var canvas = $s('canvas'+ai);
 		filterHandlers.push(new FilterHandler(canvas));
 		
 		////////////////////////////////////////////////////////////////////////////////
@@ -50,57 +47,37 @@ function initColorSwapper() {
 	
 	//////////////////////////////////
 	//give the buttons functionality//
-	$('btn1').addEventListener('click', function() { //load an image into C1
-		getPixelsFromImage(IMG_NAME, function(pixels, width) {
-			filterHandlers[0].intendedWidth = width;
-			filterHandlers[0].pixels = pixels;
-			filterHandlers[0].updateCanvas();
+    function loadPic(name, num) {
+        getPixelsFromImage(name, function(pixels, width) {
+			filterHandlers[num].intendedWidth = width;
+			filterHandlers[num].pixels = pixels;
+			filterHandlers[num].updateCanvas();
 		});
-	});
-	$('btn2').addEventListener('click', function() { //blur C1 and load that into C2
-		filterHandlers[1].intendedWidth = filterHandlers[0].intendedWidth;
-		//filterHandlers[1].pixels = filterHandlers[0].applyFilter(gaussianBlurFilterX); //x direction
-		//filterHandlers[1].pixels = filterHandlers[1].applyFilter(gaussianBlurFilterY); //y direction
-		filterHandlers[1].pixels = filterHandlers[0].applyFilter(gaussianBlurFilter); 
-		filterHandlers[1].updateCanvas();
-	});
-	$('btn3').addEventListener('click', function() { //differentiate C1 along x and load that into C2
-		filterHandlers[1].intendedWidth = filterHandlers[0].intendedWidth;
-		filterHandlers[1].pixels = filterHandlers[0].applyFilter(d_dxFilter);
-		filterHandlers[1].updateCanvas();
-	});
-	$('btn4').addEventListener('click', function() { //differentiate C1 along y and load that into C2
-		filterHandlers[1].intendedWidth = filterHandlers[0].intendedWidth;
-		filterHandlers[1].pixels = filterHandlers[0].applyFilter(d_dyFilter);
-		filterHandlers[1].updateCanvas();
-	});
-	$('btn5').addEventListener('click', function() { //swap the canvases
-		var temp = [filterHandlers[0].pixels.slice(0), filterHandlers[0].intendedWidth];
-		filterHandlers[0].pixels = filterHandlers[1].pixels.slice(0);
-		filterHandlers[0].intendedWidth = filterHandlers[1].intendedWidth;
-		filterHandlers[1].pixels = temp[0];
-		filterHandlers[1].intendedWidth = temp[1];
-		
-		filterHandlers[0].updateCanvas();
-		filterHandlers[1].updateCanvas();
-	});
-}
+    }
+	$s('btn1').addEventListener('click', function() {loadPic(apple, 0)});
+	$s('btn2').addEventListener('click', function() {loadPic(banana, 0)});
+	$s('btn3').addEventListener('click', function() {loadPic(kiwi, 0)});
+	$s('btn4').addEventListener('click', function() {loadPic(orange, 0)});
+	$s('btn5').addEventListener('click', function() {loadPic(peach, 0)});
+	$s('btn6').addEventListener('click', function() {loadPic(plum, 0)});
+	$s('btn7').addEventListener('click', function() {loadPic(strawberry, 0)});
 
-function getGaussian(rows, cols) {
-	var getGaussianValueAt = function(x, y, sigma) {
-		sigma = sigma || 0.84089642;
-		return (1/(2*Math.PI*sigma*sigma))*Math.exp(-(x*x+y*y)/(2*sigma*sigma));
-	};
-	var ret = [];
-	var yRadius = (rows-1)/2
-	var xRadius = (cols-1)/2
-	for (var y = -yRadius; y <= yRadius; y++) {
-		ret.push([]);
-		for (var x = -xRadius; x <= xRadius; x++) {
-			ret[y+yRadius].push(getGaussianValueAt(x, y));
-		}
-	}
-	return ret;
+	$s('btn8').addEventListener('click', function() {loadPic(apple, 1)});
+	$s('btn9').addEventListener('click', function() {loadPic(banana, 1)});
+	$s('btn10').addEventListener('click', function() {loadPic(kiwi, 1)});
+	$s('btn11').addEventListener('click', function() {loadPic(orange, 1)});
+	$s('btn12').addEventListener('click', function() {loadPic(peach, 1)});
+	$s('btn13').addEventListener('click', function() {loadPic(plum, 1)});
+	$s('btn14').addEventListener('click', function() {loadPic(strawberry, 1)});
+
+	$s('btn15').addEventListener('click', function() { //switch the colors of the fruits
+        var mainColor0 = filterHandlers[0].getMainColor();
+        var mainColor1 = filterHandlers[1].getMainColor();
+        filterHandlers[0].changeColor(mainColor0, mainColor1)
+		filterHandlers[0].updateCanvas();
+        filterHandlers[1].changeColor(mainColor1, mainColor0)
+		filterHandlers[1].updateCanvas();
+	});
 }
  
 /********************
@@ -128,7 +105,7 @@ function getPixelsFromImage(location, callback) { //returns array of pixel color
 	img.src = location; //load the image
 }
 
-function $(id) { //ghetto jquery: IDS ONLY
+function $s(id) { //ghetto jquery: IDS ONLY
 	return document.getElementById(id);
 }
  
@@ -173,46 +150,58 @@ function FilterHandler(canvas) {
 		this.ctx.putImageData(currImageData, 0, 0);
 	}
 	
-	function applyFilter(filter) {
-		if (filter.length%2 == 0 || filter[0].length%2 == 0) return false; //requires odd dimensions
-		var count = 0;
-		
-		var copy = [];
-		var yMargin = (filter.length-1)/2; //which pixels to skip due to y
-		var xMargin = (filter[0].length-1)/2; //" " due to x
-		var intendedHeight = this.pixels.length/(4*this.intendedWidth);
-		for (var y = 0; y < intendedHeight; y++) { //for all intended rows
-			for (var x = 0; x < this.intendedWidth; x++) { //and for each intended column
-				for (var c = 0; c < 4; c++) { //and for each color channel
-					var idx = 4*(this.intendedWidth*y + x)+c;
-					if (c == 3) {
-						copy.push(this.pixels[idx]); //keep the original alpha values
-						continue; //move on to the next pixel
-					} else copy.push(0); //copy array starts as a blank slate
-					
-					//////////////////////////////////////////////////////
-					//iterate over all the pixels in the filter's window//
-					for (var fy = 0; fy < filter.length; fy++) {
-						for (var fx = 0; fx < filter[0].length; fx++) {
-							var isOutsideImage = (y-yMargin+fy < 0 || y-yMargin+fy >= intendedHeight) ||
-												 (x-xMargin+fx < 0 || x-xMargin+fx >= this.intendedWidth);
-							var wIdx = 4*(this.intendedWidth*(y-yMargin+fy) + (x-xMargin+fx))+c;
-							var val = filter[fy][fx]*(isOutsideImage ? 0 : this.pixels[wIdx]);
-//if (x == 51 && y == 72) console.log(c+' '+val); 
-							copy[idx] += val;
-						}
-					}
-//if (x == 51 && y == 72) console.log(c+' '+copy[idx]); 
-					copy[idx] = Math.min(Math.max(Math.floor(copy[idx]), 0), 255); //colors in [0, 256)
-				}
-			}
+	function changeColor(fromCol, toCol) {
+		function colorIsGood(c) {
+            var total = Math.sqrt(c[0]*c[0] + c[1]*c[1] + c[2]*c[2]);
+            return total > 50 && total < 400;
+        }
+
+        function overlayColor(minor, major) {
+            var result = [];
+
+            var gray = (minor[0]+minor[1]+minor[2])/(3*255);
+            gray = 0.5+0.7*gray;
+            result[0] = gray*major[0];
+            result[1] = gray*major[1];
+            result[2] = gray*major[2];
+
+            return result;
+        }
+
+		for (var p = 0; p < this.pixels.length; p+=4) { //for all pixels in the image
+            var currColor = [this.pixels[p], this.pixels[p+1], this.pixels[p+2]];
+			if (colorIsGood(currColor)) {
+                var overlay = overlayColor(currColor, toCol);
+                this.pixels[p] = overlay[0];
+                this.pixels[p+1] = overlay[1];
+                this.pixels[p+2] = overlay[2];
+            }
 		}
-		
-		return copy;
 	}
+
+    function getMainColor() {
+        function colorIsGood(c) {
+            var total = Math.sqrt(c[0]*c[0] + c[1]*c[1] + c[2]*c[2]);
+            return total > 50 && total < 400;
+        }
+
+        var colorsLookedAt = 0;
+        var color = [0, 0, 0];
+		for (var p = 0; p < this.pixels.length; p+=4) { //for all pixels in the image
+            var currColor = [this.pixels[p], this.pixels[p+1], this.pixels[p+2]];
+			if (colorIsGood(currColor)) {
+                colorsLookedAt++;
+                color[0] += currColor[0];
+                color[1] += currColor[1];
+                color[2] += currColor[2];
+            }
+		}
+        return [color[0]/colorsLookedAt, color[1]/colorsLookedAt, color[2]/colorsLookedAt];
+    }
 		
 	this.updateCanvas = updateCanvas;
-	this.applyFilter = applyFilter;
+    this.getMainColor = getMainColor;
+    this.changeColor = changeColor;
 }
 
 window.addEventListener('load', initColorSwapper);
