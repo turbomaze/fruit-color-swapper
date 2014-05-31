@@ -153,28 +153,48 @@ function FilterHandler(canvas) {
 	function changeColor(fromCol, toCol) {
 		function colorIsGood(c) {
             var total = Math.sqrt(c[0]*c[0] + c[1]*c[1] + c[2]*c[2]);
-            return total > 50 && total < 400;
+            return total > 10 && total < 400;
         }
 
-        function overlayColor(minor, major) {
-            var result = [];
+        function invertColor(color) {
+            return [255-color[0], 255-color[1], 255-color[2]];
+        }
 
-            var gray = (minor[0]+minor[1]+minor[2])/(3*255);
-            gray = 0.5+0.7*gray;
-            result[0] = gray*major[0];
-            result[1] = gray*major[1];
-            result[2] = gray*major[2];
+        function multiplyColor(col1, col2) { //rgb 0-255
+            var ret = [];
+            for (var ai = 0; ai < 3; ai++) {
+                ret.push(Math.floor((col1[ai]*col2[ai])/255));
+            }
+            return ret;
+        }
 
-            return result;
+        function divideColor(col1, col2) { //rgb 0-255
+            var ret = [];
+            for (var ai = 0; ai < 3; ai++) {
+                ret.push(Math.floor((col1[ai]*col2[ai])/255));
+            }
+            return ret;
+        }
+
+        function mergeColors(minor, major) {
+            var ret = [];
+            for (var ai = 0; ai < 3; ai++) {
+                if (major[ai] < 128) {
+                    ret.push((major[ai]*minor[ai])/128);
+                } else {
+                    ret.push(255 - ((255-major[ai])*(255-minor[ai]))/128);
+                }
+            }
+            return ret;
         }
 
 		for (var p = 0; p < this.pixels.length; p+=4) { //for all pixels in the image
             var currColor = [this.pixels[p], this.pixels[p+1], this.pixels[p+2]];
 			if (colorIsGood(currColor)) {
-                var overlay = overlayColor(currColor, toCol);
-                this.pixels[p] = overlay[0];
-                this.pixels[p+1] = overlay[1];
-                this.pixels[p+2] = overlay[2];
+                var merge = mergeColors(currColor, toCol);
+                this.pixels[p] = merge[0];
+                this.pixels[p+1] = merge[1];
+                this.pixels[p+2] = merge[2];
             }
 		}
 	}
