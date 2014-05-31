@@ -1,0 +1,35 @@
+/* GENERAL START */
+.canv-wrapper {
+	height: 300px;
+	margin-bottom: 14px;
+}
+.column { overflow: visible; }
+/* GENERAL END */
+
+/* TOOLS START */
+.button { /* stolen from https://daneden.me/toast/ */
+	line-height: 2;
+	padding: 4px 15px;
+	padding: 0.2rem;
+	margin-bottom: 14px;
+	margin-right: -0.3rem;
+	text-align: center;
+	font-size: 0.75rem;
+	color: #FFF;
+	background-color: #50AD5F;
+	border: 1px solid rgba(0,0,0,.1);
+	border-radius: 0.24rem;
+	-webkit-border-radius: 0.24rem;
+	text-shadow: 0 1px 1px rgba(0,0,0,.1);
+}
+.button:hover {
+	cursor: pointer;
+	box-shadow: 1px 1px 7px #888888;
+	overflow: visible;
+}
+.button:active {
+	cursor: pointer;
+	background-color: #4AA158;
+	border: 1px solid rgba(0,0,0,0.2);
+}
+/* TOOLS END */

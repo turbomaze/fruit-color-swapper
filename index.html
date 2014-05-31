@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<title>Image Color Swapper</title>
+		<script src="js/colorswapper.js"></script>
+		<script src="js/perfectcanvas.js"></script>
+		<link rel="stylesheet" href="css/toast.css">
+		<link rel="stylesheet" href="css/style.css">
+	</head>
+	<body>
+		<div class="container">
+			<header>
+				<h1>Image Color Swapper</h1>
+			</header>
+			<hr class="unit span-grid">
+			<div class="grid">
+				<div class="unit one-of-two canv-wrapper">
+					<canvas id="canvas0" width="1" height="1"></canvas>
+				</div>
+				<div class="unit one-of-two canv-wrapper">
+					<canvas id="canvas1" width="1" height="1"></canvas>
+				</div>
+				<div class="column unit one-of-two">
+					<div class="grid">
+						<div class="button unit one-of-two" id="btn1">
+							Image -> C1
+						</div>
+						<div class="button unit one-of-two" id="btn2">
+							Gaussian Blur
+						</div>
+						<div class="button unit one-of-two" id="btn3">
+							[d/dx][C1] -> C2
+						</div>
+						<div class="button unit one-of-two" id="btn4">
+							[d/dy][C1] -> C2
+						</div>
+					</div>
+				</div>
+				<div class="column unit one-of-two">
+					<div class="grid">
+						<div class="button unit span-grid" id="btn5">
+							Swap Canvases
+						</div>
+					</div>
+				</div>
+                <div class="unit span-grid">
+                    <div class="button unit span-grid" id="btn6" style="margin-left: 0;">
+                        Swap Colors
+                    </div>
+                </div>
+			</div>
+		</div>
+	</body>
+</html>
